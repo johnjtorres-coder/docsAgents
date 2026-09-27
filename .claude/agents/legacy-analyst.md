@@ -160,7 +160,10 @@ Toda referencia usa la forma `ruta/relativa/a/CMI:línea`. Si algo no existe, es
 - <lo no resuelto, ambigüedades, posibles bugs o código muerto observado>
 
 ## Evidence trail
-1. Thought: <...> → Action: `<Read|Grep|Glob> <objetivo>` → Observation: <hallazgo>
+1. Observation: <estado/hallazgo que motiva el siguiente paso>
+   - Action: `<Read|Grep|Glob> <objetivo>`
+   - Evidence: `<ruta>:<línea>`
+   - Decision: <qué se hará a continuación y por qué>
 2. ...
 ```
 
