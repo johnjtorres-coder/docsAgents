@@ -42,10 +42,14 @@ Descubrir, para la pantalla recibida:
 2. Qué hace cada método del bean (flujo, validaciones, mensajes, navegación).
 3. Qué Facades/EJB usa y qué consultas ejecutan.
 4. Qué entidades y tablas toca, y sus relaciones relevantes.
-5. Qué reglas de negocio están implícitas en el código.
+5. Qué comportamientos funcionales están implementados en el código y cuáles
+   podrían representar reglas de negocio.
+   - No asumir que todo comportamiento observado es una regla de negocio.
+   - Todo comportamiento debe estar respaldado por evidencia.
+   - Toda regla de negocio inferida debe marcarse como REQUIRES_FUNCTIONAL_VALIDATION salvo que exista evidencia explícita que la identifique como regla.
 6. De qué depende (sesión, FacesContext, otros beans, reportes).
 
-### Loop ReAct (Thought → Action → Observation)
+### Loop ReAct (Observation → Action → Evidence → Decision)
 
 Repite hasta cumplir TERMINATION. Registra cada paso en *Evidence trail*.
 
@@ -55,7 +59,21 @@ Repite hasta cumplir TERMINATION. Registra cada paso en *Evidence trail*.
 4. **Seguir cada `@EJB XxxFacadeLocal`** → leer `XxxFacade.java`. Si el método llamado no está ahí, viene de `AbstractFacade` (CRUD genérico): indícalo.
 5. **Resolver consultas**: por cada `createNamedQuery("Entidad.x")` busca el `@NamedQuery(name = "Entidad.x", query = ...)` en `modelo/` y transcribe el JPQL. Registra también `createQuery` / `createNativeQuery`.
 6. **Analizar entidades**: `@Table(name)`, columnas usadas en las queries, relaciones (`@ManyToOne`, `@OneToMany`, `@JoinColumn`), validaciones Bean Validation (`@NotNull`, `@Size`).
-7. **Extraer reglas de negocio**: condiciones `if`, filtros en JPQL (ej. estado = ACTIVO), límites, cálculos, excepciones capturadas y mensajes `FacesMessage` mostrados al usuario.
+7. Analizar comportamiento funcional y posibles reglas de negocio:
+   a. Observed behavior:
+      Registrar objetivamente qué hace el código: condiciones if,
+      filtros JPQL, cálculos, límites, excepciones, validaciones,
+      cambios de estado y mensajes mostrados al usuario.
+   b. Inferred business rule:
+      Solo cuando el comportamiento parezca representar una regla funcional,
+      formularla separadamente como una posible regla de negocio.
+      Toda inferencia debe incluir:
+      - evidencia;
+      - origen;
+      - nivel de certeza;
+      - estado REQUIRES_FUNCTIONAL_VALIDATION.
+   Nunca convertir automáticamente una condición técnica o comportamiento
+   legacy en una regla de negocio.
 8. **Navegación**: strings de retorno de los métodos, `?faces-redirect=true`, `ExternalContext.redirect(...)`, `<p:link>`/`<h:link outcome>`, `<p:button>`. Si la pantalla se alcanza por el menú dinámico, indica que su URL viene de la tabla `Menu` (vía `menuControler`).
 
 **Límite de profundidad:** sigue la cadena principal completa, pero no más de **2 saltos** fuera de ella (ej. un bean auxiliar inyectado → su Facade, y ahí paras). Lo que quede pendiente va a *Open questions*.
@@ -123,8 +141,17 @@ Toda referencia usa la forma `ruta/relativa/a/CMI:línea`. Si algo no existe, es
 ## PrimeFaces components
 - `p:<componente>` — <para qué se usa> — `<xhtml>:<línea>`
 
-## Business rules
-- <regla en lenguaje de negocio> — `<ruta>:<línea>`
+## Observed behavior
+- <descripción objetiva del comportamiento observado>
+  - Tipo: <condición | filtro | cálculo | validación | cambio de estado | mensaje | otro>
+  - Evidence: `<ruta>:<línea>`
+
+## Inferred business rules
+- <posible regla expresada en lenguaje funcional>
+  - Derived from: <comportamiento observado>
+  - Evidence: `<ruta>:<línea>`
+  - Confidence: <HIGH | MEDIUM | LOW>
+  - Status: `REQUIRES_FUNCTIONAL_VALIDATION`
 
 ## Dependencies
 - <FacesContext | sessionMap["usuario"] | otro bean | reporte .jrxml | librería> — <cómo se usa> — `<ruta>:<línea>`
@@ -158,7 +185,10 @@ El análisis está **completo** cuando se cumplen todas:
 - [ ] Cada método de bean invocado desde la UI está analizado.
 - [ ] Cada Facade invocado está trazado hasta su consulta y su entidad/tabla.
 - [ ] Cada `NamedQuery` usada tiene su JPQL transcrito.
-- [ ] Las 12 secciones del schema (Feature → Dependencies) están llenas o marcadas `N/A — <motivo>`.
+- [ ] Todas las secciones obligatorias del schema están llenas o marcadas `N/A — <motivo>`.
+- [ ] Todo comportamiento funcional identificado está registrado en `Observed behavior` con evidencia.
+- [ ] Toda regla inferida está separada del comportamiento observado y marcada `REQUIRES_FUNCTIONAL_VALIDATION`.
+- [ ] Ninguna inferencia funcional se presenta como hecho confirmado sin evidencia explícita.
 - [ ] *Open questions* y *Evidence trail* están presentes.
 - [ ] El archivo está escrito en `docsAgents/legacy-map/`.
 
