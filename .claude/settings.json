@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "D:/ProyectoMultiAgentes/CMI"
+    ],
+    "deny": [
+      "Edit(//d/ProyectoMultiAgentes/CMI/**)",
+      "Write(//d/ProyectoMultiAgentes/CMI/**)",
+      "Edit(//D:/ProyectoMultiAgentes/CMI/**)",
+      "Write(//D:/ProyectoMultiAgentes/CMI/**)"
+    ]
+  }
+}
