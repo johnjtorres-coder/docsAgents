@@ -1,0 +1,217 @@
+artifact: functional-review
+schema_version: 1.0
+feature: vista-maquina
+
+source:
+  artifact: functional-spec/vista-maquina.feature-spec.md
+  version: 1.0
+
+review:
+  status: IN_PROGRESS
+  reviewer: human
+  reviewed_at: 2026-09-27
+
+# decision: CONFIRMED | CONFIRMED_WITH_CHANGE | REJECTED | PENDING
+# priority: tomado de la columna "Impact" de la sección 14 del feature-spec
+decisions:
+
+  - id: HV-001
+    priority: HIGH
+    question: "¿El serial es único por máquina? Si no lo es, ¿cómo debe desambiguarse la consulta?"
+    decision: CONFIRMED
+    answer: "Sí. El serial identifica de forma única una máquina."
+    impact:
+      - BR-001
+      - FR-002
+      - ERR-002
+
+  - id: HV-002
+    priority: HIGH
+    question: "¿Qué significa Estado_contrato = 1 y qué otros estados existen? ¿Puede una máquina tener más de un contrato vigente simultáneamente? Si es posible, ¿cuál debe mostrarse?"
+    decision: CONFIRMED_WITH_CHANGE
+    answer: >
+      Estado 1 significa contrato activo.
+      Una máquina debe tener máximo un contrato activo.
+    impact:
+      - BR-002
+      - FR-004
+      - ERR-003
+
+  - id: HV-003
+    priority: HIGH
+    question: "¿Qué debe mostrarse cuando la máquina no tiene contrato vigente?"
+    decision: CONFIRMED
+    answer: >
+      Mostrar los datos de la máquina y los históricos asociados,
+      pero indicar que no existe contrato vigente.
+    impact:
+      - ALT-001
+      - AC-014
+
+  - id: HV-004
+    priority: HIGH
+    question: "¿Cuál es el comportamiento esperado al consultar un serial inexistente?"
+    decision: CONFIRMED
+    answer: se debe mostrar un mensaje de error indicando que la máquina no existe.
+    impact:
+      - ERR-001
+      - AC-013
+
+  - id: HV-005
+    priority: MEDIUM
+    question: "¿Las lecturas de contador deben mostrarse solo del contrato vigente o también de contratos anteriores de la máquina?"
+    decision: CONFIRMED
+    answer: Las lecturas de contador solo deben mostrar las del contrato vigente, no de contratos anteriores.
+    impact:
+      - BR-003
+      - FR-005
+      - AC-004
+
+  - id: HV-006
+    priority: MEDIUM
+    question: "¿Se confirma que mantenimientos e instalaciones se muestran para la máquina completa, independientemente del contrato?"
+    decision: CONFIRMED
+    answer: Si se deben mostrar todas las instalaciones y mantenimientos de la maquna, la vista debe identificar a qué contrato pertenecen.
+    impact:
+      - BR-004
+      - FR-006
+      - FR-007
+
+  - id: HV-007
+    priority: MEDIUM
+    question: "¿La lectura de contador en la instalación admite valores negativos o menores a lecturas previas? ¿Existe relación con las lecturas mensuales de contador?"
+    decision: CONFIRMED
+    answer: no se admiten valores negativos ni menores a lecturas previas. La lectura de contador en la instalación no tiene relación con las lecturas mensuales de contador.
+    impact:
+      - BR-005
+      - VAL-001
+      - VAL-002
+
+  - id: HV-008
+    priority: HIGH
+    question: "¿La selección de repuesto/insumo es obligatoria para registrar una instalación?"
+    decision: CONFIRMED
+    answer: Sí, la selección de repuesto/insumo es obligatoria para registrar una instalación.
+    impact:
+      - VAL-005
+      - ERR-005
+      - AC-016
+
+  - id: HV-009
+    priority: HIGH
+    question: "¿Debe exigirse una máquina consultada y existente antes de permitir el registro?"
+    decision: CONFIRMED
+    answer: Sí, debe exigirse una máquina consultada y existente antes de permitir el registro, si no hay maquina consultada y existente, no se debe permitir el acceso al registro.
+    impact:
+      - VAL-006
+      - ERR-004
+      - AC-015
+    impact:
+      - VAL-006
+      - ERR-004
+      - AC-015
+
+  - id: HV-010
+    priority: MEDIUM
+    question: "¿La fecha de instalación es obligatoria? ¿Admite fechas futuras? ¿Debe proponerse la fecha actual? ¿Interesa registrar la hora?"
+    decision: CONFIRMED
+    answer: Sí, la fecha de instalación es obligatoria. No se admiten fechas futuras. Se debe proponer la fecha actual. No interesa registrar la hora.
+    impact:
+      - VAL-007
+      - IN-006
+
+  - id: HV-011
+    priority: MEDIUM
+    question: "¿El usuario solicitante debe seguir siendo texto libre o seleccionarse de usuarios/personas conocidas? ¿Es obligatorio? ¿Debe registrarse también el usuario autenticado que realiza el registro?"
+    decision: CONFIRMED
+    answer: Si el usuario solicitante es texto libre, y si es obligatorio. No es necesario registrar el usuario autenticado que realiza el registro.
+    impact:
+      - BR-007
+      - IN-005
+
+  - id: HV-012
+    priority: LOW
+    question: "¿La nota es obligatoria? ¿Es adecuado el límite de 300 caracteres?"
+    decision: CONFIRMED
+    answer: No es obligatoria la nota. No es adecuado el límite de 300 caracteres.
+    impact:
+      - VAL-003
+      - IN-004
+
+  - id: HV-013
+    priority: HIGH
+    question: "¿Qué perfiles pueden consultar máquinas y cuáles pueden registrar instalaciones?"
+    decision: PENDING
+    answer: No se ha definido el uso de perfiles, por lo que no se puede responder a esta pregunta.
+    impact:
+      - BR-008
+      - FR-012
+      - Actors
+
+  - id: HV-014
+    priority: MEDIUM
+    question: "¿Qué información debe recibir el usuario cuando el registro falla?"
+    decision: CONFIRMED
+    answer: Se debe informar un error controlado, mostrando informacion relevante para que el usuario pueda corregir la situación y reintentar el registro. No se debe mostrar información sensible ni detalles internos del sistema.
+    impact:
+      - ERR-007
+
+  - id: HV-015
+    priority: LOW
+    question: "Tras un registro exitoso, ¿debe limpiarse también la selección de repuesto/insumo?"
+    decision: CONFIRMED
+    answer: SI , tras un registro exitoso, debe limpiarse también la selección de repuesto/insumo.
+    impact:
+      - FR-011
+
+  - id: HV-016
+    priority: MEDIUM
+    question: "¿En qué zona horaria y formato deben registrarse y mostrarse las fechas de mantenimiento e instalación?"
+    decision: Pending
+    answer: se debe usar la zona horaria de bogota colombia, el formato esta por definir
+    impact:
+      - FR-006
+      - FR-007
+
+  - id: HV-017
+    priority: LOW
+    question: "¿El criterio de sugerencias de serial (empieza por, sin distinguir mayúsculas, máximo 12) es el deseado?"
+    decision: CONFIRMED
+    answer: si es correcto
+    impact:
+      - FR-001
+      - IN-002
+
+  - id: HV-018
+    priority: LOW
+    question: "¿Las opciones del filtro del historial deben ser todo el catálogo o solo los repuestos presentes en el historial de la máquina?"
+    decision: CONFIRMED
+    answer: Solo deben mostrarse los repuestos presentes en el historial de la máquina.
+    impact:
+      - FR-008
+
+  - id: HV-019
+    priority: LOW
+    question: "¿Qué debe ocurrir si el usuario solicita la consulta con el serial vacío?"
+    decision: CONFIRMED
+    answer: Se debe mostrar un mensaje de error indicando que el serial es obligatorio.
+    impact:
+      - VAL-008
+
+# Gate hacia arquitectura: todos los HV con priority HIGH deben estar resueltos
+# (decision distinta de PENDING) para que architecture_can_start sea true.
+gate:
+  blocking_items:
+    - HV-001
+    - HV-002
+    - HV-003
+    - HV-004
+    - HV-008
+    - HV-009
+    - HV-013
+  pending_blocking_items:
+    - HV-004
+    - HV-008
+    - HV-009
+    - HV-013
+  architecture_can_start: true
