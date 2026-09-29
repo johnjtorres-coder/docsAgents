@@ -59,6 +59,7 @@ También puedes leer:
 CLAUDE.md
 legacy-map/**
 functional-spec/**
+human-review/**
 ```
 
 si necesitas consultar convenciones o artefactos relacionados.
@@ -581,6 +582,117 @@ THEN el sistema muestra la información de la máquina.
 
 No incluyas arquitectura ni detalles de implementación.
 
+## 4.1 Revision / Consolidation mode
+
+El agente tiene dos modos de ejecución:
+
+### Mode A — Initial analysis
+
+Se utiliza cuando la entrada principal es:
+
+`legacy-map/<feature>.legacy-map.md`
+
+En este modo genera:
+
+`functional-spec/<feature>.feature-spec.md`
+
+siguiendo el proceso definido anteriormente.
+
+---
+
+### Mode B — Human review consolidation
+
+Se utiliza cuando existen conjuntamente:
+
+- `functional-spec/<feature>.feature-spec.md`
+- `human-review/<feature>.functional-review.yaml`
+
+En este modo NO debes reconstruir nuevamente la funcionalidad desde cero.
+
+Debes consolidar la especificación existente aplicando las decisiones humanas.
+
+La jerarquía de autoridad es:
+
+HUMAN REVIEW
+    >
+FEATURE SPEC
+    >
+LEGACY MAP
+
+El `legacy-map` se utiliza únicamente como fuente de trazabilidad y evidencia,
+no para contradecir decisiones humanas.
+
+### Proceso de consolidación
+
+Para cada decisión `HV-*` del archivo `functional-review.yaml`:
+
+1. Lee `decision`, `answer` e `impact`.
+2. Localiza en el feature-spec todos los elementos indicados en `impact`.
+3. Aplica la decisión humana.
+
+#### CONFIRMED
+
+La respuesta humana confirma el comportamiento o regla.
+
+- Actualiza el elemento afectado.
+- Cambia su estado a `CONFIRMED`.
+- Elimina la pregunta correspondiente de las validaciones humanas pendientes.
+- Conserva trazabilidad hacia el `HV-*`.
+
+#### CONFIRMED_WITH_CHANGE
+
+La respuesta humana modifica la propuesta original.
+
+- Sustituye el comportamiento candidato por la decisión humana.
+- Actualiza los FR, BR, VAL, ALT, ERR o AC indicados en `impact`.
+- Si la decisión implica nuevos criterios de aceptación, actualízalos.
+- Marca el elemento como `CONFIRMED`.
+- Registra `Human source: HV-xxx`.
+
+#### REJECTED
+
+La propuesta no debe formar parte del sistema futuro.
+
+- No la mantengas como requerimiento.
+- Registra la decisión en una sección de decisiones rechazadas.
+- Conserva trazabilidad hacia la propuesta original.
+
+#### PENDING
+
+La decisión sigue abierta.
+
+- Mantén el elemento como `REQUIRES_HUMAN_VALIDATION`.
+- No inventes una solución.
+- Conserva la pregunta pendiente.
+
+### Reglas
+
+- Las decisiones humanas son fuente de mayor autoridad.
+- No reinterpretar ni contradecir una decisión humana.
+- No volver a leer directamente el repositorio CMI.
+- No diseñar arquitectura.
+- No definir endpoints, clases Java ni componentes Angular.
+- No agregar requerimientos sin evidencia del feature-spec o del human-review.
+- Una decisión humana puede crear o modificar un requerimiento aunque el legacy no lo tuviera.
+
+### Output de consolidación
+
+Genera:
+
+`functional-spec/<feature>.feature-spec.v2.md`
+
+No sobrescribas la especificación V1.
+
+El estado final debe derivarse del Human Gate:
+
+- Si `architecture_can_start: true` y no existen pendientes:
+  `status: APPROVED`
+
+- Si `architecture_can_start: true` pero quedan pendientes no bloqueantes:
+  `status: APPROVED_WITH_OPEN_ITEMS`
+
+- Si `architecture_can_start: false`:
+  `status: BLOCKED`
 ---
 
 # 5. TOOLS
@@ -861,6 +973,7 @@ pero no son responsabilidad de este agente.
 docsAgents/CLAUDE.md
 docsAgents/legacy-map/**
 docsAgents/functional-spec/**
+docsAgents/human-review/**
 ```
 
 ## Escritura permitida
@@ -869,6 +982,7 @@ docsAgents/functional-spec/**
 
 ```text
 docsAgents/functional-spec/<feature>.feature-spec.md
+docsAgents/functional-spec/<feature>.feature-spec.v2.md
 ```
 
 ## Prohibido
