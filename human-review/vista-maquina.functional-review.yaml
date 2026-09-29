@@ -7,7 +7,7 @@ source:
   version: 1.0
 
 review:
-  status: IN_PROGRESS
+  status: APPROVED_WITH_OPEN_ITEMS
   reviewer: human
   reviewed_at: 2026-09-27
 
@@ -42,8 +42,10 @@ decisions:
     question: "¿Qué debe mostrarse cuando la máquina no tiene contrato vigente?"
     decision: CONFIRMED
     answer: >
-      Mostrar los datos de la máquina y los históricos asociados,
-      pero indicar que no existe contrato vigente.
+      Mostrar los datos generales de la máquina, sus mantenimientos y su
+      historial de repuestos/insumos. Indicar que no existe contrato vigente.
+      No mostrar información contractual ni lecturas de contador cuando no
+      exista contrato vigente.
     impact:
       - ALT-001
       - AC-014
@@ -61,7 +63,10 @@ decisions:
     priority: MEDIUM
     question: "¿Las lecturas de contador deben mostrarse solo del contrato vigente o también de contratos anteriores de la máquina?"
     decision: CONFIRMED
-    answer:  Mostrar los datos generales de la máquina, sus mantenimientos y su historial de repuestos/insumos. Indicar que no existe contrato vigente. No mostrar información contractual ni lecturas de contador cuando no exista contrato vigente.
+    answer: >
+      Las lecturas de contador deben mostrarse únicamente para el contrato
+      vigente de la máquina. No deben mostrarse lecturas pertenecientes a
+      contratos anteriores.
     impact:
       - BR-003
       - FR-005
@@ -174,6 +179,7 @@ decisions:
 
   - id: HV-016
     priority: MEDIUM
+    question: "¿En qué zona horaria y formato deben registrarse y mostrarse las fechas de mantenimiento e instalación?"
     decision: PENDING
     answer: >
       CONFIRMED: utilizar la zona horaria America/Bogota.
@@ -186,7 +192,7 @@ decisions:
       - AC-005
       - AC-006
       - AC-009
-      
+
   - id: HV-017
     priority: LOW
     question: "¿El criterio de sugerencias de serial (empieza por, sin distinguir mayúsculas, máximo 12) es el deseado?"
