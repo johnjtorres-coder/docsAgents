@@ -61,7 +61,7 @@ decisions:
     priority: MEDIUM
     question: "¿Las lecturas de contador deben mostrarse solo del contrato vigente o también de contratos anteriores de la máquina?"
     decision: CONFIRMED
-    answer: Las lecturas de contador solo deben mostrar las del contrato vigente, no de contratos anteriores.
+    answer:  Mostrar los datos generales de la máquina, sus mantenimientos y su historial de repuestos/insumos. Indicar que no existe contrato vigente. No mostrar información contractual ni lecturas de contador cuando no exista contrato vigente.
     impact:
       - BR-003
       - FR-005
@@ -76,6 +76,10 @@ decisions:
       - BR-004
       - FR-006
       - FR-007
+      - OUT-004
+      - OUT-005
+      - AC-005
+      - AC-006
 
   - id: HV-007
     priority: MEDIUM
@@ -84,8 +88,10 @@ decisions:
     answer: no se admiten valores negativos ni menores a lecturas previas. La lectura de contador en la instalación no tiene relación con las lecturas mensuales de contador.
     impact:
       - BR-005
+      - IN-007
       - VAL-001
       - VAL-002
+      - ERR-006
 
   - id: HV-008
     priority: HIGH
@@ -113,8 +119,10 @@ decisions:
     decision: CONFIRMED
     answer: Sí, la fecha de instalación es obligatoria. No se admiten fechas futuras. Se debe proponer la fecha actual. No interesa registrar la hora.
     impact:
-      - VAL-007
       - IN-006
+      - VAL-007
+      - FR-009
+      - AC-009
 
   - id: HV-011
     priority: MEDIUM
@@ -124,6 +132,8 @@ decisions:
     impact:
       - BR-007
       - IN-005
+      - FR-009
+      - AC-009
 
   - id: HV-012
     priority: LOW
@@ -133,6 +143,7 @@ decisions:
     impact:
       - VAL-003
       - IN-004
+      - AC-012
 
   - id: HV-013
     priority: HIGH
@@ -159,16 +170,23 @@ decisions:
     answer: SI , tras un registro exitoso, debe limpiarse también la selección de repuesto/insumo.
     impact:
       - FR-011
+      - AC-009
 
   - id: HV-016
     priority: MEDIUM
-    question: "¿En qué zona horaria y formato deben registrarse y mostrarse las fechas de mantenimiento e instalación?"
     decision: PENDING
-    answer: se debe usar la zona horaria de bogota colombia, el formato esta por definir
+    answer: >
+      CONFIRMED: utilizar la zona horaria America/Bogota.
+      PENDING: definir el formato visual de las fechas.
     impact:
       - FR-006
       - FR-007
-
+      - OUT-004
+      - OUT-005
+      - AC-005
+      - AC-006
+      - AC-009
+      
   - id: HV-017
     priority: LOW
     question: "¿El criterio de sugerencias de serial (empieza por, sin distinguir mayúsculas, máximo 12) es el deseado?"
@@ -177,6 +195,7 @@ decisions:
     impact:
       - FR-001
       - IN-002
+      - AC-001
 
   - id: HV-018
     priority: LOW
@@ -185,6 +204,8 @@ decisions:
     answer: Solo deben mostrarse los repuestos presentes en el historial de la máquina.
     impact:
       - FR-008
+      - AC-007
+      - ALT-004
 
   - id: HV-019
     priority: LOW
@@ -208,6 +229,5 @@ gate:
   pending_blocking_items: []
 
   non_blocking_pending_items:
-    - HV-012
     - HV-016
   architecture_can_start: true
