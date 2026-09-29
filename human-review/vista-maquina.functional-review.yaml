@@ -106,10 +106,6 @@ decisions:
       - VAL-006
       - ERR-004
       - AC-015
-    impact:
-      - VAL-006
-      - ERR-004
-      - AC-015
 
   - id: HV-010
     priority: MEDIUM
@@ -133,7 +129,7 @@ decisions:
     priority: LOW
     question: "¿La nota es obligatoria? ¿Es adecuado el límite de 300 caracteres?"
     decision: CONFIRMED
-    answer: No es obligatoria la nota. No es adecuado el límite de 300 caracteres.
+    answer: No es obligatoria la nota. No es adecuado el límite de 300 caracteres, dejar limite de 500 caracteres.
     impact:
       - VAL-003
       - IN-004
@@ -141,8 +137,8 @@ decisions:
   - id: HV-013
     priority: HIGH
     question: "¿Qué perfiles pueden consultar máquinas y cuáles pueden registrar instalaciones?"
-    decision: PENDING
-    answer: No se ha definido el uso de perfiles, por lo que no se puede responder a esta pregunta.
+    decision: CONFIRMED_WITH_CHANGE
+    answer:     En esta versión no se implementará autorización diferenciada por perfiles. La funcionalidad requiere únicamente un usuario autenticado. La autorización por roles queda fuera del alcance actual y podrá incorporarse posteriormente.
     impact:
       - BR-008
       - FR-012
@@ -167,7 +163,7 @@ decisions:
   - id: HV-016
     priority: MEDIUM
     question: "¿En qué zona horaria y formato deben registrarse y mostrarse las fechas de mantenimiento e instalación?"
-    decision: Pending
+    decision: PENDING
     answer: se debe usar la zona horaria de bogota colombia, el formato esta por definir
     impact:
       - FR-006
@@ -209,9 +205,9 @@ gate:
     - HV-008
     - HV-009
     - HV-013
-  pending_blocking_items:
-    - HV-004
-    - HV-008
-    - HV-009
-    - HV-013
+  pending_blocking_items: []
+
+  non_blocking_pending_items:
+    - HV-012
+    - HV-016
   architecture_can_start: true
